@@ -1,30 +1,13 @@
 package org.congesapp.model;
 
-import java.text.ParseException;
-import java.util.*;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.xml.bind.annotation.XmlRootElement;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.congesapp.exception.DataModelException;
 import org.congesapp.tools.Tools;
 
+import javax.persistence.*;
+import javax.xml.bind.annotation.XmlRootElement;
+import java.text.ParseException;
+import java.util.*;
 
 
 @Entity
@@ -32,233 +15,233 @@ import org.congesapp.tools.Tools;
 @XmlRootElement
 public class Salarie extends AbstractEntity<Salarie> {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id", updatable = false, nullable = false)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", updatable = false, nullable = false)
+    private Long id;
 
-	@Column(updatable = false, nullable = false, unique = true)
-	private String matricule;
+    @Column(updatable = false, nullable = false, unique = true)
+    private String matricule;
 
-	@Column(nullable = false)
-	private String nom;
+    @Column(nullable = false)
+    private String nom;
 
-	@Column(nullable = false)
-	private String prenom;
+    @Column(nullable = false)
+    private String prenom;
 
-	@Column(nullable = false)
-	@Temporal(value = TemporalType.DATE)
-	private Date naissance;
+    @Column(nullable = false)
+    @Temporal(value = TemporalType.DATE)
+    private Date naissance;
 
-	@ManyToOne
-	private Poste poste;
+    @ManyToOne
+    private Poste poste;
 
-	//@JsonManagedReference
-	@ManyToOne	
-	private Service service;
+    //@JsonManagedReference
+    @ManyToOne
+    private Service service;
 
-	@Column(nullable = false)
-	@Temporal(value = TemporalType.DATE)
-	private Date entree;
+    @Column(nullable = false)
+    @Temporal(value = TemporalType.DATE)
+    private Date entree;
 
-	//@JsonManagedReference
-	@OneToMany(mappedBy = "salarie", cascade = { CascadeType.ALL }, fetch = FetchType.EAGER, orphanRemoval = true)
-	private List<Conge> conges = new ArrayList<>();
+    //@JsonManagedReference
+    @OneToMany(mappedBy = "salarie", cascade = {CascadeType.ALL}, fetch = FetchType.EAGER, orphanRemoval = true)
+    private List<Conge> conges = new ArrayList<>();
 
-	@Column
-	private double resteConges;
+    @Column
+    private double resteConges;
 
-	@OneToOne(cascade = { CascadeType.ALL })
-	private Adresse adresse;
+    @OneToOne(cascade = {CascadeType.ALL})
+    private Adresse adresse;
 
-	@Column
-	private String tel;
+    @Column
+    private String tel;
 
-	@Column(nullable = false)
-	private String email = "";
-	
-	@JsonIgnore
-	@Column
-	private String login;
+    @Column(nullable = false)
+    private String email = "";
 
-	@JsonIgnore
-	@Column
-	private String pwd;
+    @JsonIgnore
+    @Column
+    private String login;
 
-	@JsonIgnore
-	@Enumerated(EnumType.ORDINAL)
-	private DroitEnum droit;
+    @JsonIgnore
+    @Column
+    private String pwd;
 
-	public Salarie() {
-		super(Salarie.class);
-	}
+    @JsonIgnore
+    @Enumerated(EnumType.ORDINAL)
+    private DroitEnum droit;
 
-	public Salarie(String nom, String prenom, Date naissance, Adresse adresse, Poste poste, Service service,
-			DroitEnum droit) {
-		this(nom, prenom, naissance, adresse, "", nom + "." + prenom + "@" + "congesapp.fr", new Date(0), nom + prenom,
-				"P@$$w0R2blabla", 0, poste, service, droit);
-	}
+    public Salarie() {
+        super(Salarie.class);
+    }
 
-	public Salarie(String nom, String prenom, Date naissance, Adresse adresse, String tel, String email, Date entree,
-			String login, String pwd, int resteConges, Poste poste, Service service, DroitEnum droit) {
-		super(Salarie.class);
-		this.nom = nom;
-		this.prenom = prenom;
-		this.naissance = naissance;
-		this.adresse = adresse;
-		this.tel = tel;
-		this.email = email;
-		this.entree = entree;
-		this.login = login;
-		this.pwd = pwd;
-		this.resteConges = resteConges;
-		this.poste = poste;
-		this.service = service;
-		this.droit = droit;
-		generateMatricule();
-	}
+    public Salarie(String nom, String prenom, Date naissance, Adresse adresse, Poste poste, Service service,
+                   DroitEnum droit) {
+        this(nom, prenom, naissance, adresse, "", nom + "." + prenom + "@" + "congesapp.fr", new Date(0), nom + prenom,
+                "P@$$w0R2blabla", 0, poste, service, droit);
+    }
 
-	public Long getId() {
-		return this.id;
-	}
+    public Salarie(String nom, String prenom, Date naissance, Adresse adresse, String tel, String email, Date entree,
+                   String login, String pwd, int resteConges, Poste poste, Service service, DroitEnum droit) {
+        super(Salarie.class);
+        this.nom = nom;
+        this.prenom = prenom;
+        this.naissance = naissance;
+        this.adresse = adresse;
+        this.tel = tel;
+        this.email = email;
+        this.entree = entree;
+        this.login = login;
+        this.pwd = pwd;
+        this.resteConges = resteConges;
+        this.poste = poste;
+        this.service = service;
+        this.droit = droit;
+        generateMatricule();
+    }
 
-	public void setId(final Long id) {
-		this.id = id;
-	}
+    public Long getId() {
+        return this.id;
+    }
 
-	public void setEntree(Date entree) {
-		this.entree = entree;
-	}
+    public void setId(final Long id) {
+        this.id = id;
+    }
 
-	public String getNom() {
-		return nom;
-	}
+    public void setEntree(Date entree) {
+        this.entree = entree;
+    }
 
-	public void setNom(String nom) {
-		this.nom = nom;
-	}
+    public String getNom() {
+        return nom;
+    }
 
-	public String getPrenom() {
-		return prenom;
-	}
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
 
-	public void setPrenom(String prenom) {
-		this.prenom = prenom;
-	}
+    public String getPrenom() {
+        return prenom;
+    }
 
-	public Date getNaissance() {
-		return naissance;
-	}
+    public void setPrenom(String prenom) {
+        this.prenom = prenom;
+    }
 
-	public void setNaissance(Date naissance) {
-		this.naissance = naissance;
-	}
+    public Date getNaissance() {
+        return naissance;
+    }
 
-	public Adresse getAdresse() {
-		return adresse;
-	}
+    public void setNaissance(Date naissance) {
+        this.naissance = naissance;
+    }
 
-	public void setAdresse(Adresse adresse) {
-		this.adresse = adresse;
-	}
+    public Adresse getAdresse() {
+        return adresse;
+    }
 
-	public String getTel() {
-		return tel;
-	}
+    public void setAdresse(Adresse adresse) {
+        this.adresse = adresse;
+    }
 
-	public void setTel(String tel) {
-		this.tel = tel;
-	}
+    public String getTel() {
+        return tel;
+    }
 
-	public String getEmail() {
-		return email;
-	}
+    public void setTel(String tel) {
+        this.tel = tel;
+    }
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+    public String getEmail() {
+        return email;
+    }
 
-	public String getMatricule() {
-		return matricule;
-	}
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-	public void setMatricule(String matricule) {
-		this.matricule = matricule;
-	}
+    public String getMatricule() {
+        return matricule;
+    }
 
-	public Date getEntree() {
-		return entree;
-	}
+    public void setMatricule(String matricule) {
+        this.matricule = matricule;
+    }
 
-	public void setDateEntree(Date entree) {
-		this.entree = entree;
-	}
+    public Date getEntree() {
+        return entree;
+    }
 
-	public String getLogin() {
-		return login;
-	}
+    public void setDateEntree(Date entree) {
+        this.entree = entree;
+    }
 
-	public void setLogin(String login) {
-		this.login = login;
-	}
+    public String getLogin() {
+        return login;
+    }
 
-	public String getPwd() {
-		return pwd;
-	}
+    public void setLogin(String login) {
+        this.login = login;
+    }
 
-	public void setPwd(String pwd) {
-		this.pwd = pwd;
-	}
+    public String getPwd() {
+        return pwd;
+    }
 
-	public void addConge(Conge conge) {
-		this.conges.add(conge);
-	}
+    public void setPwd(String pwd) {
+        this.pwd = pwd;
+    }
 
-	public void removeConge(Conge conge) {
-		this.conges.remove(conge);
-	}
+    public void addConge(Conge conge) {
+        this.conges.add(conge);
+    }
 
-	public List<Conge> getConges() {
-		return conges;
-	}
+    public void removeConge(Conge conge) {
+        this.conges.remove(conge);
+    }
 
-	public void setConges(List<Conge> conges) {
-		this.conges = conges;
-	}
+    public List<Conge> getConges() {
+        return conges;
+    }
 
-	public double getResteConges() {
-		return resteConges;
-	}
+    public void setConges(List<Conge> conges) {
+        this.conges = conges;
+    }
 
-	public void setResteConges(double resteConges) {
-		this.resteConges = resteConges;
-	}
+    public double getResteConges() {
+        return resteConges;
+    }
 
-	public Poste getPoste() {
-		return this.poste;
-	}
+    public void setResteConges(double resteConges) {
+        this.resteConges = resteConges;
+    }
 
-	public void setPoste(final Poste poste) {
-		this.poste = poste;
-	}
+    public Poste getPoste() {
+        return this.poste;
+    }
 
-	public Service getService() {
-		return this.service;
-	}
+    public void setPoste(final Poste poste) {
+        this.poste = poste;
+    }
 
-	public void setService(final Service service) {
-		this.service = service;
-	}
+    public Service getService() {
+        return this.service;
+    }
 
-	public DroitEnum getDroit() {
-		return this.droit;
-	}
+    public void setService(final Service service) {
+        this.service = service;
+    }
 
-	public void setDroit(final DroitEnum droit) {
-		this.droit = droit;
-	}
+    public DroitEnum getDroit() {
+        return this.droit;
+    }
+
+    public void setDroit(final DroitEnum droit) {
+        this.droit = droit;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -286,69 +269,68 @@ public class Salarie extends AbstractEntity<Salarie> {
     }
 
     @Override
-	public void hydrateFromUrlParams(Map<String, String[]> pMap) throws DataModelException {
+    public void hydrateFromUrlParams(Map<String, String[]> pMap) throws DataModelException {
 
-		this.nom = getDef(pMap, "nom", "John");
-		this.prenom = getDef(pMap, "prenom", "Doe");
+        this.nom = getDef(pMap, "nom", "John");
+        this.prenom = getDef(pMap, "prenom", "Doe");
 
-		try {
-			this.naissance = Tools.strToDate(getDef(pMap, "naissance", "1/1/1970"));
-		} catch (ParseException e) {
-			throw new DataModelException("Impossible de parser la date de naissance : " + this.naissance);
-		}
+        try {
+            this.naissance = Tools.strToDate(getDef(pMap, "naissance", "1/1/1970"));
+        } catch (ParseException e) {
+            throw new DataModelException("Impossible de parser la date de naissance : " + this.naissance);
+        }
 
-		try {
-			this.entree = Tools.strToDate(getDef(pMap, "entree", "1/1/1970"));
-		} catch (ParseException e) {
-			throw new DataModelException("Impossible de parser la date d'entree : " + this.entree);
-		}
+        try {
+            this.entree = Tools.strToDate(getDef(pMap, "entree", "1/1/1970"));
+        } catch (ParseException e) {
+            throw new DataModelException("Impossible de parser la date d'entree : " + this.entree);
+        }
 
-		try {
-			this.resteConges = Double.parseDouble(getDef(pMap, "resteConges", "0"));
-		} catch (NumberFormatException e) {
-			throw new DataModelException("Impossible de parser le nombre de congés : " + this.resteConges);
-		}
+        try {
+            this.resteConges = Double.parseDouble(getDef(pMap, "resteConges", "0"));
+        } catch (NumberFormatException e) {
+            throw new DataModelException("Impossible de parser le nombre de congés : " + this.resteConges);
+        }
 
-		this.adresse = new Adresse();
-		this.adresse.hydrateFromUrlParams(pMap);
+        this.adresse = new Adresse();
+        this.adresse.hydrateFromUrlParams(pMap);
 
-		this.tel = getDef(pMap, "tel", "99999");
-		this.email = getDef(pMap, "email", "john@doe.com");
+        this.tel = getDef(pMap, "tel", "99999");
+        this.email = getDef(pMap, "email", "john@doe.com");
 
-		this.login = getDef(pMap, "login", "user");
-		this.pwd = getDef(pMap, "pwd", "user");
+        this.login = getDef(pMap, "login", "user");
+        this.pwd = getDef(pMap, "pwd", "user");
 
-		try {
-			this.droit = DroitEnum.valueOf(getDef(pMap, "droit", "0"));
-		} catch (IllegalArgumentException e) {
-			throw new DataModelException("Impossible de parser le droit : " + this.droit);
-		}
+        try {
+            this.droit = DroitEnum.valueOf(getDef(pMap, "droit", "0"));
+        } catch (IllegalArgumentException e) {
+            throw new DataModelException("Impossible de parser le droit : " + this.droit);
+        }
 
-		String matriculeStr = getDef(pMap, "matricule", "");
+        String matriculeStr = getDef(pMap, "matricule", "");
 
-		if (matriculeStr != null && !matriculeStr.isEmpty() && !matriculeStr.equals("0")) {
-			matricule = matriculeStr;
-		} else {
-			generateMatricule();
-		}
+        if (matriculeStr != null && !matriculeStr.isEmpty() && !matriculeStr.equals("0")) {
+            matricule = matriculeStr;
+        } else {
+            generateMatricule();
+        }
 
-	}
+    }
 
-	/**
-	 * Matricule generation with initials+birth day+birth month+a pseudo random
-	 * number between 1 and 999
-	 *
-	 */
-	private void generateMatricule() {
+    /**
+     * Matricule generation with initials+birth day+birth month+a pseudo random
+     * number between 1 and 999
+     */
+    private void generateMatricule() {
 
-		GregorianCalendar gc = new GregorianCalendar();
-		gc.setTime(naissance);
-		String day = String.format("%02d", gc.get(GregorianCalendar.DAY_OF_MONTH));
-		String month = String.format("%02d", gc.get(GregorianCalendar.MONTH) + 1);
-		String random = String.format("%03d", (int) (Math.random() * 999 + 1));
-		matricule = nom.substring(0, 1) + prenom.substring(0, 1) + day + month + random;
+        GregorianCalendar gc = new GregorianCalendar();
+        gc.setTime(naissance);
+        String day = String.format("%02d", gc.get(GregorianCalendar.DAY_OF_MONTH));
+        String month = String.format("%02d", gc.get(GregorianCalendar.MONTH) + 1);
+        String random = String.format("%03d", (int) (Math.random() * 999 + 1));
+        matricule = nom.substring(0, 1) + prenom.substring(0, 1) + day + month + random;
 
 
-	}
+    }
 
 }

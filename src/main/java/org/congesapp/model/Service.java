@@ -1,107 +1,98 @@
 package org.congesapp.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import org.congesapp.exception.DataModelException;
+
+import javax.persistence.*;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import org.congesapp.exception.DataModelException;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table
 @XmlRootElement
 public class Service extends AbstractEntity<Service> {
 
-	private static final long serialVersionUID = 1L;
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id", updatable = false, nullable = false)
-	private Long id;
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", updatable = false, nullable = false)
+    private Long id;
 
-	@Column(unique = true, nullable = false)
-	private String nom;
-	
-	@JsonBackReference
-	@OneToMany(mappedBy = "service", fetch = FetchType.EAGER)
-	private Set<Salarie> salarie = new HashSet<Salarie>();
+    @Column(unique = true, nullable = false)
+    private String nom;
 
-	public Service() {
-		super(Service.class);
-	}
+    @JsonBackReference
+    @OneToMany(mappedBy = "service", fetch = FetchType.EAGER)
+    private Set<Salarie> salarie = new HashSet<Salarie>();
 
-	public Service(String nom) {
-		super(Service.class);
-		this.nom = nom;
-	}
+    public Service() {
+        super(Service.class);
+    }
 
-	public Long getId() {
-		return this.id;
-	}
+    public Service(String nom) {
+        super(Service.class);
+        this.nom = nom;
+    }
 
-	public void setId(final Long id) {
-		this.id = id;
-	}
+    public Long getId() {
+        return this.id;
+    }
 
-	public String getNom() {
-		return nom;
-	}
+    public void setId(final Long id) {
+        this.id = id;
+    }
 
-	public void setNom(String nom) {
-		this.nom = nom;
-	}
+    public String getNom() {
+        return nom;
+    }
 
-	public Set<Salarie> getSalarie() {
-		return this.salarie;
-	}
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
 
-	public void setSalarie(final Set<Salarie> salarie) {
-		this.salarie = salarie;
-	}
+    public Set<Salarie> getSalarie() {
+        return this.salarie;
+    }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((nom == null) ? 0 : nom.hashCode());
-		return result;
-	}
+    public void setSalarie(final Set<Salarie> salarie) {
+        this.salarie = salarie;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Service other = (Service) obj;
-		if (nom == null) {
-			if (other.nom != null)
-				return false;
-		} else if (!nom.equals(other.nom))
-			return false;
-		return true;
-	}
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((nom == null) ? 0 : nom.hashCode());
+        return result;
+    }
 
-	@Override
-	public String toString() {
-		return nom;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Service other = (Service) obj;
+        if (nom == null) {
+            if (other.nom != null)
+                return false;
+        } else if (!nom.equals(other.nom))
+            return false;
+        return true;
+    }
 
-	@Override
-	public void hydrateFromUrlParams(Map<String, String[]> pMap) throws DataModelException {
-		this.nom = getDef(pMap, "nom", " ");
-	}
+    @Override
+    public String toString() {
+        return nom;
+    }
+
+    @Override
+    public void hydrateFromUrlParams(Map<String, String[]> pMap) throws DataModelException {
+        this.nom = getDef(pMap, "nom", " ");
+    }
 
 }

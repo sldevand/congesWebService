@@ -5,8 +5,9 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;
 
-public interface SalarieRepository  extends CrudRepository<Salarie, String> {
+public interface SalarieRepository extends CrudRepository<Salarie, String> {
     Optional<Salarie> findByMatricule(String matricule);
+
     Salarie deleteByMatricule(String matricule);
 }
 
