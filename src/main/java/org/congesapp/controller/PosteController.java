@@ -15,8 +15,7 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 public class PosteController {
 
     @Autowired
-    PosteRepository posteRepository;
-
+    private PosteRepository posteRepository;
 
     @PostMapping(value = "/",
             consumes = APPLICATION_JSON_VALUE,
@@ -30,11 +29,7 @@ public class PosteController {
             produces = APPLICATION_JSON_VALUE)
     public Poste read(@PathVariable String intitule) {
         Optional<Poste> sOpt = posteRepository.findByIntitule(intitule);
-        if (sOpt.isPresent()) {
-            return sOpt.get();
-        } else {
-            return null;
-        }
+        return sOpt.orElse(null);
     }
 
     @GetMapping(value = "/",
