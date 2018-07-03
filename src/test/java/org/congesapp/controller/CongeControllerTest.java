@@ -3,25 +3,17 @@ package org.congesapp.controller;
 import org.congesapp.CongesApp;
 import org.congesapp.model.Conge;
 import org.congesapp.model.Motif;
-import org.congesapp.repository.CongeRepository;
-import org.congesapp.repository.MotifRepository;
-import org.congesapp.repository.SalarieRepository;
 import org.congesapp.tools.Tools;
-import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.Assert;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Optional;
@@ -64,7 +56,7 @@ public class CongeControllerTest extends AbstractControllerTest{
     }
 
     @Test
-    public void TestAPostConge() {
+    public void testAPostConge() {
         Conge maResponse = postConge(c0);
         testId = maResponse.getId();
         testNom = maResponse.getMotif().getNom();
@@ -72,7 +64,7 @@ public class CongeControllerTest extends AbstractControllerTest{
     }
 
     @Test
-    public void TestBPostConges() {
+    public void testBPostConges() {
 
         Conge poste1 = postConge(c1);
         Assert.isTrue(c1.equals(poste1), "Conged Conge not equals to the persisted one");
@@ -89,7 +81,7 @@ public class CongeControllerTest extends AbstractControllerTest{
     }
 
     @Test
-    public void TestCGetCongeById() {
+    public void testCGetCongeById() {
 
         ResponseEntity<Conge> myResponse = restTemplate.getForEntity(END_URL +testId, Conge.class, headers);
         Conge conge = myResponse.getBody();
@@ -98,7 +90,7 @@ public class CongeControllerTest extends AbstractControllerTest{
     }
 
     @Test
-    public void TestCGetCongeByMotif() {
+    public void testCGetCongeByMotif() {
 
         ResponseEntity<Conge> myResponse = restTemplate.getForEntity(END_URL +"reason/"+ testNom, Conge.class, headers);
         Conge conge = myResponse.getBody();
@@ -107,39 +99,28 @@ public class CongeControllerTest extends AbstractControllerTest{
     }
 
     @Test
-    public void TestDGetAllConges() {
+    public void testDGetAllConges() {
         List myResponse = restTemplate.getForObject(END_URL, List.class, headers);
         Assert.isTrue(myResponse.size() == 3, "List size != 3");
     }
 
     @Test
-    public void TestEPutConge() {
-
+    public void testEPutConge() {
         Optional<Conge> cOpt = congeRepository.findById(testId);
         Assert.isTrue(cOpt.isPresent(), "Conge " + testNom + " not found");
-
         Conge conge = cOpt.get();
-
         conge.setMotif(m1);
-
-
         HttpEntity<Conge> requestBody = new HttpEntity<>(conge, headers);
-
         ResponseEntity<Conge> response = restTemplate.exchange(END_URL, PUT, requestBody, Conge.class, headers);
-
         Assert.isTrue(response.getStatusCodeValue() == 200, "OK");
         Conge maResponse = response.getBody();
-
         testId = maResponse.getId();
-
         Assert.isTrue(maResponse.getMotif().getNom().equals(m1.getNom()), "Persisted intitule != newIntitule");
-
         c0 = maResponse;
     }
 
-
     @Test
-    public void TestFGetIfCongeHasBeenUpdated() {
+    public void testFGetIfCongeHasBeenUpdated() {
 
         ResponseEntity<Conge> myResponse = restTemplate.getForEntity(END_URL + testId, Conge.class, headers);
         Conge conge = myResponse.getBody();
@@ -148,16 +129,11 @@ public class CongeControllerTest extends AbstractControllerTest{
     }
 
     @Test
-    public void TestGDeleteCongeById() {
-
+    public void testGDeleteCongeById() {
         restTemplate.delete(END_URL + testId, headers);
 
         ResponseEntity<Conge> myResponse = restTemplate.getForEntity(END_URL + testId, Conge.class, headers);
         Conge conge = myResponse.getBody();
         Assert.isTrue(null == conge, "Fetched conge is not null");
-
-
     }
-
-
 }

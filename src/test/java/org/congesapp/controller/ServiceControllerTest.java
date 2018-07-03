@@ -2,22 +2,16 @@ package org.congesapp.controller;
 
 import org.congesapp.CongesApp;
 import org.congesapp.model.Service;
-import org.congesapp.repository.ServiceRepository;
-import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.Assert;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Optional;
@@ -44,14 +38,14 @@ public class ServiceControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    public void TestAPostService() {
+    public void testAPostService() {
         Service maResponse = postService(s0);
         testNom = maResponse.getNom();
         Assert.isTrue(s0.equals(maResponse), "Serviced Service not equals to the persisted one");
     }
 
     @Test
-    public void TestBPostServices() {
+    public void testBPostServices() {
 
 
         Service service1 = postService(s1);
@@ -69,7 +63,7 @@ public class ServiceControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    public void TestCGetServiceByNom() {
+    public void testCGetServiceByNom() {
 
         ResponseEntity<Service> myResponse = restTemplate.getForEntity(END_URL + testNom, Service.class, headers);
         Service service = myResponse.getBody();
@@ -78,13 +72,13 @@ public class ServiceControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    public void TestDGetAllServices() {
+    public void testDGetAllServices() {
         List myResponse = restTemplate.getForObject(END_URL, List.class, headers);
         Assert.isTrue(myResponse.size() == 3, "List size != 3");
     }
 
     @Test
-    public void TestEPutService() {
+    public void testEPutService() {
 
         Optional<Service> sOpt = serviceRepository.findByNom(testNom);
         Assert.isTrue(sOpt.isPresent(), "Service " + testNom + " not found");
@@ -110,7 +104,7 @@ public class ServiceControllerTest extends AbstractControllerTest {
 
 
     @Test
-    public void TestFGetIfServiceHasBeenUpdated() {
+    public void testFGetIfServiceHasBeenUpdated() {
 
         ResponseEntity<Service> myResponse = restTemplate.getForEntity(END_URL + testNom, Service.class, headers);
         Service service = myResponse.getBody();
@@ -119,7 +113,7 @@ public class ServiceControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    public void TestGDeleteServiceByNom() {
+    public void testGDeleteServiceByNom() {
 
         restTemplate.delete(END_URL + testNom, headers);
 

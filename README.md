@@ -1,3 +1,5 @@
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/c51cb311e2a14f0bbae6e7e292e2c9c3)](https://www.codacy.com/app/sldevand/congesWebService?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=sldevand/congesWebService&amp;utm_campaign=Badge_Grade)
+
 congesWebService
 ======
 **congesWebService** Employee's holidays management Webservice built with Java Spring-boot and Hibernate/MySQL
