@@ -24,10 +24,17 @@ public class CongeController {
         return congeRepository.save(conge);
     }
 
-    @GetMapping(value = "/{nom}",
+    @GetMapping(value = "/reason/{nom}",
             produces = APPLICATION_JSON_VALUE)
-    public Conge read(@PathVariable String nom) {
-        Optional<Conge> sOpt = congeRepository.findByNom(nom);
+    public Conge readByMotif(@PathVariable String nom) {
+        Optional<Conge> sOpt = congeRepository.findByMotif(nom);
+        return sOpt.orElse(null);
+    }
+
+    @GetMapping(value = "/{id}",
+            produces = APPLICATION_JSON_VALUE)
+    public Conge readById(@PathVariable("id") Long id) {
+        Optional<Conge> sOpt = congeRepository.findById(id);
         return sOpt.orElse(null);
     }
 
@@ -44,10 +51,10 @@ public class CongeController {
         return congeRepository.save(conge);
     }
 
-    @DeleteMapping(value = "/{nom}")
-    public void delete(@PathVariable String nom) {
+    @DeleteMapping(value = "/{id}")
+    public void deleteById(@PathVariable("id") Long id) {
 
-        Optional<Conge> conge = congeRepository.findByNom(nom);
+        Optional<Conge> conge = congeRepository.findById(id);
         conge.ifPresent(m -> congeRepository.delete(m));
     }
 

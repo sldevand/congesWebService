@@ -1,6 +1,5 @@
 package org.congesapp.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.congesapp.exception.DataModelException;
 import org.congesapp.tools.Tools;
 
@@ -21,7 +20,7 @@ public class Conge extends AbstractEntity<Conge> {
     @Column(name = "id", updatable = false, nullable = false)
     private Long id;
 
-    @JsonBackReference
+
     @ManyToOne
     private Salarie salarie;
 

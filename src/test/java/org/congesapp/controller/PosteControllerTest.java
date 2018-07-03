@@ -31,38 +31,21 @@ import static org.springframework.http.HttpMethod.PUT;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = CongesApp.class)
 @ActiveProfiles({"TEST"})
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class PosteControllerTest {
+public class PosteControllerTest extends AbstractControllerTest {
 
-    private final static String BASE_URL = "http://localhost:9001/jobs/";
+    private final static String END_URL = BASE_URL+"jobs/";
     private static String testIntitule;
-    private static HttpHeaders headers;
+
     private static Poste p0;
     private static Poste p1;
     private static Poste p2;
 
-    private RestTemplate restTemplate = new RestTemplate();
 
-    private static boolean testedOnce = false;
-
-    @Autowired
-    private PosteRepository posteRepository;
-
-
-    @Before
-    public void before() {
-        headers = new HttpHeaders();
-        headers.add("Content-Type", MediaType.APPLICATION_JSON_VALUE);
-        headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
-
-        if (!testedOnce) {
-
-            posteRepository.deleteAll();
-            p0 = new Poste("Developpeur");
-            p1 = new Poste("Scrum Master");
-            p2 = new Poste("Product Owner");
-
-            testedOnce = true;
-        }
+    @Override
+    protected void initialize() {
+        p0 = new Poste("Developpeur");
+        p1 = new Poste("Scrum Master");
+        p2 = new Poste("Product Owner");
     }
 
     @Test
@@ -85,7 +68,7 @@ public class PosteControllerTest {
 
     private Poste postPoste(Poste poste) {
         HttpEntity<Poste> requestBody = new HttpEntity<>(poste, headers);
-        ResponseEntity<Poste> response = restTemplate.postForEntity(BASE_URL, requestBody, Poste.class, headers);
+        ResponseEntity<Poste> response = restTemplate.postForEntity(END_URL, requestBody, Poste.class, headers);
         Assert.isTrue(response.getStatusCodeValue() == 200, "OK");
         return response.getBody();
     }
@@ -93,7 +76,7 @@ public class PosteControllerTest {
     @Test
     public void TestCGetPosteByIntitule() {
 
-        ResponseEntity<Poste> myResponse = restTemplate.getForEntity(BASE_URL + testIntitule, Poste.class, headers);
+        ResponseEntity<Poste> myResponse = restTemplate.getForEntity(END_URL + testIntitule, Poste.class, headers);
         Poste poste = myResponse.getBody();
         Assert.isTrue(null != poste, "Fetched poste is null");
         Assert.isTrue(poste.equals(p0), poste.toString() + " != " + p0.toString());
@@ -101,7 +84,7 @@ public class PosteControllerTest {
 
     @Test
     public void TestDGetAllPostes() {
-        List myResponse = restTemplate.getForObject(BASE_URL, List.class, headers);
+        List myResponse = restTemplate.getForObject(END_URL, List.class, headers);
         Assert.isTrue(myResponse.size() == 3, "List size != 3");
     }
 
@@ -118,7 +101,7 @@ public class PosteControllerTest {
 
         HttpEntity<Poste> requestBody = new HttpEntity<>(poste, headers);
 
-        ResponseEntity<Poste> response = restTemplate.exchange(BASE_URL, PUT, requestBody, Poste.class, headers);
+        ResponseEntity<Poste> response = restTemplate.exchange(END_URL, PUT, requestBody, Poste.class, headers);
 
         Assert.isTrue(response.getStatusCodeValue() == 200, "OK");
         Poste maResponse = response.getBody();
@@ -134,7 +117,7 @@ public class PosteControllerTest {
     @Test
     public void TestFGetIfPosteHasBeenUpdated() {
 
-        ResponseEntity<Poste> myResponse = restTemplate.getForEntity(BASE_URL + testIntitule, Poste.class, headers);
+        ResponseEntity<Poste> myResponse = restTemplate.getForEntity(END_URL + testIntitule, Poste.class, headers);
         Poste poste = myResponse.getBody();
         Assert.isTrue(null != poste, "Fetched poste is null");
         Assert.isTrue(poste.equals(p0), poste.toString() + " != " + p0.toString());
@@ -143,9 +126,9 @@ public class PosteControllerTest {
     @Test
     public void TestGDeletePosteByIntitule() {
 
-        restTemplate.delete(BASE_URL + testIntitule, headers);
+        restTemplate.delete(END_URL + testIntitule, headers);
 
-        ResponseEntity<Poste> myResponse = restTemplate.getForEntity(BASE_URL + testIntitule, Poste.class, headers);
+        ResponseEntity<Poste> myResponse = restTemplate.getForEntity(END_URL + testIntitule, Poste.class, headers);
         Poste poste = myResponse.getBody();
         Assert.isTrue(null == poste, "Fetched poste is not null");
 

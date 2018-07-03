@@ -31,59 +31,36 @@ import static org.springframework.http.HttpMethod.PUT;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = CongesApp.class)
 @ActiveProfiles({"TEST"})
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class SalarieControllerTest {
+public class SalarieControllerTest extends AbstractControllerTest {
 
-    private final static String BASE_URL = "http://localhost:9001/employees/";
+    private final static String END_URL = BASE_URL+"employees/";
     private static String testMatricule;
-    private static HttpHeaders headers;
+
     private static Salarie s0;
     private static Salarie s1;
     private static Salarie s2;
 
-    private RestTemplate restTemplate = new RestTemplate();
 
-    private static boolean testedOnce = false;
+    @Override
+    protected void initialize() {
+        addSalaries();
+    }
 
+    private void addSalaries(){
 
-    @Autowired
-    private SalarieRepository salarieRepository;
+        Poste poste = new Poste("dev");
+        Service service = new Service("R&D");
+        posteRepository.save(poste);
+        serviceRepository.save(service);
 
-    @Autowired
-    private ServiceRepository serviceRepository;
+        Adresse adr0 = new Adresse("Gallion E", "rue des Marins", 66666L, "Tortuga", "Bahamas");
+        s0 = new Salarie("Sparrow", "Jack", Tools.randomDate(), adr0, poste , service, DroitEnum.USER);
 
-    @Autowired
-    private PosteRepository posteRepository;
+        Adresse adr1 = new Adresse("Batiment 1", "rue des Peupliers", 69730L, "Genay", "France");
+        s1 = new Salarie("Lorrain", "Sébastien", Tools.randomDate(), adr1, poste, service, DroitEnum.ADMIN);
 
-
-    @Before
-    public void before() {
-        headers = new HttpHeaders();
-        headers.add("Content-Type", MediaType.APPLICATION_JSON_VALUE);
-        headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
-
-        if (!testedOnce) {
-
-            salarieRepository.deleteAll();
-            posteRepository.deleteAll();
-            serviceRepository.deleteAll();
-
-            Poste poste = new Poste("dev");
-            Service service = new Service("R&D");
-            posteRepository.save(poste);
-            serviceRepository.save(service);
-            List<Poste> postes = (List<Poste>) posteRepository.findAll();
-            List<Service> services = (List<Service>) serviceRepository.findAll();
-            Adresse adr0 = new Adresse("Gallion E", "rue des Marins", 66666L, "Tortuga", "Bahamas");
-            s0 = new Salarie("Sparrow", "Jack", Tools.randomDate(), adr0, postes.get(0), services.get(0), DroitEnum.USER);
-
-            Adresse adr1 = new Adresse("Batiment 1", "rue des Peupliers", 69730L, "Genay", "France");
-            s1 = new Salarie("Lorrain", "Sébastien", Tools.randomDate(), adr1, postes.get(0), services.get(0), DroitEnum.ADMIN);
-
-            Adresse adr2 = new Adresse("Les charmettes", "avenue de la glande", 38460L, "Cremieu", "France");
-            s2 = new Salarie("Prrrt", "Gudrun", Tools.randomDate(), adr2, postes.get(0), services.get(0), DroitEnum.SUPERADMIN);
-
-            testedOnce = true;
-        }
+        Adresse adr2 = new Adresse("Les charmettes", "avenue de la glande", 38460L, "Cremieu", "France");
+        s2 = new Salarie("Bersh", "Gudrun", Tools.randomDate(), adr2, poste, service, DroitEnum.SUPERADMIN);
     }
 
     @Test
@@ -105,7 +82,7 @@ public class SalarieControllerTest {
 
     public Salarie postSalarie(Salarie salarie) {
         HttpEntity<Salarie> requestBody = new HttpEntity<>(salarie, headers);
-        ResponseEntity<Salarie> response = restTemplate.postForEntity(BASE_URL, requestBody, Salarie.class, headers);
+        ResponseEntity<Salarie> response = restTemplate.postForEntity(END_URL, requestBody, Salarie.class, headers);
         Assert.isTrue(response.getStatusCodeValue() == 200, "OK");
         return response.getBody();
     }
@@ -113,7 +90,7 @@ public class SalarieControllerTest {
     @Test
     public void TestBGetSalarieByMatricule() {
 
-        ResponseEntity<Salarie> myResponse = restTemplate.getForEntity(BASE_URL + testMatricule, Salarie.class, headers);
+        ResponseEntity<Salarie> myResponse = restTemplate.getForEntity(END_URL + testMatricule, Salarie.class, headers);
         Salarie salarie = myResponse.getBody();
         Assert.isTrue(null != salarie, "Fetched salarie is null");
         Assert.isTrue(salarie.equals(s0), salarie.toString() + " != " + s0.toString());
@@ -121,7 +98,7 @@ public class SalarieControllerTest {
 
     @Test
     public void TestCGetAllSalaries() {
-        List myResponse = restTemplate.getForObject(BASE_URL, List.class, headers);
+        List myResponse = restTemplate.getForObject(END_URL, List.class, headers);
         Assert.isTrue(myResponse.size() == 3, "List size != 3");
     }
 
@@ -141,7 +118,7 @@ public class SalarieControllerTest {
 
         HttpEntity<Salarie> requestBody = new HttpEntity<>(salarie, headers);
 
-        ResponseEntity<Salarie> response = restTemplate.exchange(BASE_URL, PUT, requestBody, Salarie.class, headers);
+        ResponseEntity<Salarie> response = restTemplate.exchange(END_URL, PUT, requestBody, Salarie.class, headers);
 
         Assert.isTrue(response.getStatusCodeValue() == 200, "OK");
         Salarie maResponse = response.getBody();
@@ -157,7 +134,7 @@ public class SalarieControllerTest {
     @Test
     public void TestEGetIfSalarieHasBeenUpdated() {
 
-        ResponseEntity<Salarie> myResponse = restTemplate.getForEntity(BASE_URL + testMatricule, Salarie.class, headers);
+        ResponseEntity<Salarie> myResponse = restTemplate.getForEntity(END_URL + testMatricule, Salarie.class, headers);
         Salarie salarie = myResponse.getBody();
         Assert.isTrue(null != salarie, "Fetched salarie is null");
         Assert.isTrue(salarie.equals(s0), salarie.toString() + " != " + s0.toString());
@@ -166,9 +143,9 @@ public class SalarieControllerTest {
     @Test
     public void TestFDeleteSalarieByMatricule() {
 
-        restTemplate.delete(BASE_URL + testMatricule, headers);
+        restTemplate.delete(END_URL + testMatricule, headers);
 
-        ResponseEntity<Salarie> myResponse = restTemplate.getForEntity(BASE_URL + testMatricule, Salarie.class, headers);
+        ResponseEntity<Salarie> myResponse = restTemplate.getForEntity(END_URL + testMatricule, Salarie.class, headers);
         Salarie salarie = myResponse.getBody();
         Assert.isTrue(null == salarie, "Fetched salarie is not null");
 

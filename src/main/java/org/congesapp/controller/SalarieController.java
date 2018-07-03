@@ -29,8 +29,8 @@ public class SalarieController {
             consumes = APPLICATION_JSON_VALUE,
             produces = APPLICATION_JSON_VALUE)
     public Salarie create(@RequestBody Salarie salarie) {
-        salarieRepository.save(salarie);
-        return salarie;
+        return salarieRepository.save(salarie);
+
     }
 
     @GetMapping(value = "/{matricule}",

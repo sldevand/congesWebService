@@ -28,61 +28,40 @@ import static org.springframework.http.HttpMethod.PUT;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = CongesApp.class)
 @ActiveProfiles({"TEST"})
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class MotifControllerTest {
+public class MotifControllerTest extends AbstractControllerTest{
 
-    private final static String BASE_URL = "http://localhost:9001/reasons/";
+    private final static String END_URL = BASE_URL+"reasons/";
     private static String testNom;
-    private static HttpHeaders headers;
     private static Motif m0;
     private static Motif m1;
     private static Motif m2;
-
-    private RestTemplate restTemplate = new RestTemplate();
-
-    private static boolean testedOnce = false;
-
-    @Autowired
-    private MotifRepository motifRepository;
-
-
-    @Before
-    public void before() {
-        headers = new HttpHeaders();
-        headers.add("Content-Type", MediaType.APPLICATION_JSON_VALUE);
-        headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
-
-        if (!testedOnce) {
-
-            motifRepository.deleteAll();
-            m0 = new Motif("Maladie");
-            m1 = new Motif("Maternité");
-            m2 = new Motif("Sans solde");
-
-            testedOnce = true;
-        }
+  
+    @Override
+    protected void initialize() {
+        m0 = new Motif("Maladie");
+        m1 = new Motif("Maternité");
+        m2 = new Motif("Sans solde");
     }
 
     @Test
     public void TestAPostMotif() {
         Motif maResponse = postMotif(m0);
         testNom = maResponse.getNom();
-        Assert.isTrue(m0.equals(maResponse), "Motifd Motif not equals to the persisted one");
+        Assert.isTrue(m0.equals(maResponse), "Motif not equals to the persisted one");
     }
 
     @Test
     public void TestBPostMotifs() {
-
-
         Motif poste1 = postMotif(m1);
-        Assert.isTrue(m1.equals(poste1), "Motifd Motif not equals to the persisted one");
+        Assert.isTrue(m1.equals(poste1), "Motif not equals to the persisted one");
 
         Motif poste2 = postMotif(m2);
-        Assert.isTrue(m2.equals(poste2), "Motifd Motif not equals to the persisted one");
+        Assert.isTrue(m2.equals(poste2), "Motif not equals to the persisted one");
     }
 
-    private Motif postMotif(Motif poste) {
-        HttpEntity<Motif> requestBody = new HttpEntity<>(poste, headers);
-        ResponseEntity<Motif> response = restTemplate.postForEntity(BASE_URL, requestBody, Motif.class, headers);
+    private Motif postMotif(Motif motif) {
+        HttpEntity<Motif> requestBody = new HttpEntity<>(motif, headers);
+        ResponseEntity<Motif> response = restTemplate.postForEntity(END_URL, requestBody, Motif.class, headers);
         Assert.isTrue(response.getStatusCodeValue() == 200, "OK");
         return response.getBody();
     }
@@ -90,15 +69,15 @@ public class MotifControllerTest {
     @Test
     public void TestCGetMotifByNom() {
 
-        ResponseEntity<Motif> myResponse = restTemplate.getForEntity(BASE_URL + testNom, Motif.class, headers);
-        Motif poste = myResponse.getBody();
-        Assert.isTrue(null != poste, "Fetched poste is null");
-        Assert.isTrue(poste.equals(m0), poste.toString() + " != " + m0.toString());
+        ResponseEntity<Motif> myResponse = restTemplate.getForEntity(END_URL + testNom, Motif.class, headers);
+        Motif motif = myResponse.getBody();
+        Assert.isTrue(null != motif, "Fetched motif is null");
+        Assert.isTrue(motif.equals(m0), motif.toString() + " != " + m0.toString());
     }
 
     @Test
     public void TestDGetAllMotifs() {
-        List myResponse = restTemplate.getForObject(BASE_URL, List.class, headers);
+        List myResponse = restTemplate.getForObject(END_URL, List.class, headers);
         Assert.isTrue(myResponse.size() == 3, "List size != 3");
     }
 
@@ -108,14 +87,14 @@ public class MotifControllerTest {
         Optional<Motif> sOpt = motifRepository.findByNom(testNom);
         Assert.isTrue(sOpt.isPresent(), "Motif " + testNom + " not found");
 
-        Motif poste = sOpt.get();
+        Motif motif = sOpt.get();
         String newIntitule = "Chaudronnier";
-        poste.setNom(newIntitule);
+        motif.setNom(newIntitule);
 
 
-        HttpEntity<Motif> requestBody = new HttpEntity<>(poste, headers);
+        HttpEntity<Motif> requestBody = new HttpEntity<>(motif, headers);
 
-        ResponseEntity<Motif> response = restTemplate.exchange(BASE_URL, PUT, requestBody, Motif.class, headers);
+        ResponseEntity<Motif> response = restTemplate.exchange(END_URL, PUT, requestBody, Motif.class, headers);
 
         Assert.isTrue(response.getStatusCodeValue() == 200, "OK");
         Motif maResponse = response.getBody();
@@ -131,20 +110,20 @@ public class MotifControllerTest {
     @Test
     public void TestFGetIfMotifHasBeenUpdated() {
 
-        ResponseEntity<Motif> myResponse = restTemplate.getForEntity(BASE_URL + testNom, Motif.class, headers);
-        Motif poste = myResponse.getBody();
-        Assert.isTrue(null != poste, "Fetched poste is null");
-        Assert.isTrue(poste.equals(m0), poste.toString() + " != " + m0.toString());
+        ResponseEntity<Motif> myResponse = restTemplate.getForEntity(END_URL + testNom, Motif.class, headers);
+        Motif motif = myResponse.getBody();
+        Assert.isTrue(null != motif, "Fetched motif is null");
+        Assert.isTrue(motif.equals(m0), motif.toString() + " != " + m0.toString());
     }
 
     @Test
     public void TestGDeleteMotifByNom() {
 
-        restTemplate.delete(BASE_URL + testNom, headers);
+        restTemplate.delete(END_URL + testNom, headers);
 
-        ResponseEntity<Motif> myResponse = restTemplate.getForEntity(BASE_URL + testNom, Motif.class, headers);
-        Motif poste = myResponse.getBody();
-        Assert.isTrue(null == poste, "Fetched poste is not null");
+        ResponseEntity<Motif> myResponse = restTemplate.getForEntity(END_URL + testNom, Motif.class, headers);
+        Motif motif = myResponse.getBody();
+        Assert.isTrue(null == motif, "Fetched motif is not null");
 
 
     }

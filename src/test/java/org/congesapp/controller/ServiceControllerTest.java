@@ -28,38 +28,19 @@ import static org.springframework.http.HttpMethod.PUT;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = CongesApp.class)
 @ActiveProfiles({"TEST"})
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class ServiceControllerTest {
+public class ServiceControllerTest extends AbstractControllerTest {
 
-    private final static String BASE_URL = "http://localhost:9001/services/";
+    private final static String END_URL = BASE_URL+"services/";
     private static String testNom;
-    private static HttpHeaders headers;
     private static Service s0;
     private static Service s1;
     private static Service s2;
 
-    private RestTemplate restTemplate = new RestTemplate();
-
-    private static boolean testedOnce = false;
-
-    @Autowired
-    private ServiceRepository serviceRepository;
-
-
-    @Before
-    public void before() {
-        headers = new HttpHeaders();
-        headers.add("Content-Type", MediaType.APPLICATION_JSON_VALUE);
-        headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
-
-        if (!testedOnce) {
-
-            serviceRepository.deleteAll();
-            s0 = new Service("Commercial");
-            s1 = new Service("Informatique");
-            s2 = new Service("Direction");
-
-            testedOnce = true;
-        }
+    @Override
+    protected void initialize() {
+        s0 = new Service("Commercial");
+        s1 = new Service("Informatique");
+        s2 = new Service("Direction");
     }
 
     @Test
@@ -82,7 +63,7 @@ public class ServiceControllerTest {
 
     private Service postService(Service service) {
         HttpEntity<Service> requestBody = new HttpEntity<>(service, headers);
-        ResponseEntity<Service> response = restTemplate.postForEntity(BASE_URL, requestBody, Service.class, headers);
+        ResponseEntity<Service> response = restTemplate.postForEntity(END_URL, requestBody, Service.class, headers);
         Assert.isTrue(response.getStatusCodeValue() == 200, "OK");
         return response.getBody();
     }
@@ -90,7 +71,7 @@ public class ServiceControllerTest {
     @Test
     public void TestCGetServiceByNom() {
 
-        ResponseEntity<Service> myResponse = restTemplate.getForEntity(BASE_URL + testNom, Service.class, headers);
+        ResponseEntity<Service> myResponse = restTemplate.getForEntity(END_URL + testNom, Service.class, headers);
         Service service = myResponse.getBody();
         Assert.isTrue(null != service, "Fetched service is null");
         Assert.isTrue(service.equals(s0), service.toString() + " != " + s0.toString());
@@ -98,7 +79,7 @@ public class ServiceControllerTest {
 
     @Test
     public void TestDGetAllServices() {
-        List myResponse = restTemplate.getForObject(BASE_URL, List.class, headers);
+        List myResponse = restTemplate.getForObject(END_URL, List.class, headers);
         Assert.isTrue(myResponse.size() == 3, "List size != 3");
     }
 
@@ -115,7 +96,7 @@ public class ServiceControllerTest {
 
         HttpEntity<Service> requestBody = new HttpEntity<>(service, headers);
 
-        ResponseEntity<Service> response = restTemplate.exchange(BASE_URL, PUT, requestBody, Service.class, headers);
+        ResponseEntity<Service> response = restTemplate.exchange(END_URL, PUT, requestBody, Service.class, headers);
 
         Assert.isTrue(response.getStatusCodeValue() == 200, "OK");
         Service maResponse = response.getBody();
@@ -131,7 +112,7 @@ public class ServiceControllerTest {
     @Test
     public void TestFGetIfServiceHasBeenUpdated() {
 
-        ResponseEntity<Service> myResponse = restTemplate.getForEntity(BASE_URL + testNom, Service.class, headers);
+        ResponseEntity<Service> myResponse = restTemplate.getForEntity(END_URL + testNom, Service.class, headers);
         Service service = myResponse.getBody();
         Assert.isTrue(null != service, "Fetched service is null");
         Assert.isTrue(service.equals(s0), service.toString() + " != " + s0.toString());
@@ -140,9 +121,9 @@ public class ServiceControllerTest {
     @Test
     public void TestGDeleteServiceByNom() {
 
-        restTemplate.delete(BASE_URL + testNom, headers);
+        restTemplate.delete(END_URL + testNom, headers);
 
-        ResponseEntity<Service> myResponse = restTemplate.getForEntity(BASE_URL + testNom, Service.class, headers);
+        ResponseEntity<Service> myResponse = restTemplate.getForEntity(END_URL + testNom, Service.class, headers);
         Service service = myResponse.getBody();
         Assert.isTrue(null == service, "Fetched service is not null");
 

@@ -1,6 +1,5 @@
 package org.congesapp.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.congesapp.exception.DataModelException;
 import org.congesapp.tools.Tools;
 
@@ -38,7 +37,6 @@ public class Salarie extends AbstractEntity<Salarie> {
     @ManyToOne
     private Poste poste;
 
-    //@JsonManagedReference
     @ManyToOne
     private Service service;
 
@@ -62,15 +60,15 @@ public class Salarie extends AbstractEntity<Salarie> {
     @Column(nullable = false)
     private String email = "";
 
-    @JsonIgnore
+
     @Column
     private String login;
 
-    @JsonIgnore
+
     @Column
     private String pwd;
 
-    @JsonIgnore
+
     @Enumerated(EnumType.ORDINAL)
     private DroitEnum droit;
 
@@ -101,14 +99,6 @@ public class Salarie extends AbstractEntity<Salarie> {
         this.service = service;
         this.droit = droit;
         generateMatricule();
-    }
-
-    public Long getId() {
-        return this.id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
     }
 
     public void setEntree(Date entree) {
@@ -243,6 +233,14 @@ public class Salarie extends AbstractEntity<Salarie> {
         this.droit = droit;
     }
 
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -332,5 +330,6 @@ public class Salarie extends AbstractEntity<Salarie> {
 
 
     }
+
 
 }
