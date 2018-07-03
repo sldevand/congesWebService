@@ -30,7 +30,7 @@ import static org.springframework.http.HttpMethod.PUT;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class MotifControllerTest {
 
-    private final static String BASE_URL = "http://localhost:9001/patterns/";
+    private final static String BASE_URL = "http://localhost:9001/reasons/";
     private static String testNom;
     private static HttpHeaders headers;
     private static Motif m0;
@@ -42,7 +42,7 @@ public class MotifControllerTest {
     private static boolean testedOnce = false;
 
     @Autowired
-    private MotifRepository posteRepository;
+    private MotifRepository motifRepository;
 
 
     @Before
@@ -53,7 +53,7 @@ public class MotifControllerTest {
 
         if (!testedOnce) {
 
-
+            motifRepository.deleteAll();
             m0 = new Motif("Maladie");
             m1 = new Motif("Maternité");
             m2 = new Motif("Sans solde");
@@ -105,7 +105,7 @@ public class MotifControllerTest {
     @Test
     public void TestEPutMotif() {
 
-        Optional<Motif> sOpt = posteRepository.findByNom(testNom);
+        Optional<Motif> sOpt = motifRepository.findByNom(testNom);
         Assert.isTrue(sOpt.isPresent(), "Motif " + testNom + " not found");
 
         Motif poste = sOpt.get();

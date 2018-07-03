@@ -1,8 +1,7 @@
 package org.congesapp.controller;
 
-import org.congesapp.model.Motif;
-import org.congesapp.repository.MotifRepository;
-import org.congesapp.repository.MotifRepository;
+import org.congesapp.model.Conge;
+import org.congesapp.repository.CongeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,45 +11,44 @@ import java.util.Optional;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
 @RestController
-@RequestMapping(path="/reasons")
-public class MotifController {
+@RequestMapping(path="/holidays")
+public class CongeController {
 
     @Autowired
-    private MotifRepository motifRepository;
+    private CongeRepository congeRepository;
 
     @PostMapping(value = "/",
             consumes = APPLICATION_JSON_VALUE,
             produces = APPLICATION_JSON_VALUE)
-    public Motif create(@RequestBody Motif motif) {
-        motifRepository.save(motif);
-        return motif;
+    public Conge create(@RequestBody Conge conge) {
+        return congeRepository.save(conge);
     }
 
     @GetMapping(value = "/{nom}",
             produces = APPLICATION_JSON_VALUE)
-    public Motif read(@PathVariable String nom) {
-        Optional<Motif> sOpt = motifRepository.findByNom(nom);
+    public Conge read(@PathVariable String nom) {
+        Optional<Conge> sOpt = congeRepository.findByNom(nom);
         return sOpt.orElse(null);
     }
 
     @GetMapping(value = "/",
             produces = APPLICATION_JSON_VALUE)
-    public List<Motif> readAll() {
-        return (List<Motif>) motifRepository.findAll();
+    public List<Conge> readAll() {
+        return (List<Conge>) congeRepository.findAll();
     }
 
     @PutMapping(value = "/",
             consumes = APPLICATION_JSON_VALUE,
             produces = APPLICATION_JSON_VALUE)
-    public Motif update(@RequestBody Motif motif) {
-        return motifRepository.save(motif);
+    public Conge update(@RequestBody Conge conge) {
+        return congeRepository.save(conge);
     }
 
     @DeleteMapping(value = "/{nom}")
     public void delete(@PathVariable String nom) {
 
-        Optional<Motif> motif = motifRepository.findByNom(nom);
-        motif.ifPresent(m -> motifRepository.delete(m));
+        Optional<Conge> conge = congeRepository.findByNom(nom);
+        conge.ifPresent(m -> congeRepository.delete(m));
     }
 
 

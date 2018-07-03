@@ -62,6 +62,11 @@ public class SalarieControllerTest {
         headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
 
         if (!testedOnce) {
+
+            salarieRepository.deleteAll();
+            posteRepository.deleteAll();
+            serviceRepository.deleteAll();
+
             Poste poste = new Poste("dev");
             Service service = new Service("R&D");
             posteRepository.save(poste);

@@ -56,7 +56,7 @@ public class PosteControllerTest {
 
         if (!testedOnce) {
 
-
+            posteRepository.deleteAll();
             p0 = new Poste("Developpeur");
             p1 = new Poste("Scrum Master");
             p2 = new Poste("Product Owner");
