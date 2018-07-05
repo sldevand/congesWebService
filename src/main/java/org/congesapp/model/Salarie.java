@@ -1,5 +1,6 @@
 package org.congesapp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.congesapp.exception.DataModelException;
 import org.congesapp.tools.Tools;
@@ -45,7 +46,7 @@ public class Salarie extends AbstractEntity<Salarie> {
     @Temporal(value = TemporalType.DATE)
     private Date entree;
 
-    @JsonManagedReference
+    @JsonIgnoreProperties(value = {"salarie"})
     @OneToMany(mappedBy = "salarie", cascade = {CascadeType.ALL}, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<Conge> conges = new ArrayList<>();
 

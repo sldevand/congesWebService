@@ -1,6 +1,7 @@
 package org.congesapp.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.congesapp.exception.DataModelException;
 import org.congesapp.tools.Tools;
@@ -22,7 +23,7 @@ public class Conge extends AbstractEntity<Conge> {
     @Column(name = "id", updatable = false, nullable = false)
     private Long id;
 
-    @JsonBackReference
+    @JsonIgnoreProperties(value = {"conges"})
     @ManyToOne
     private Salarie salarie;
 
@@ -141,6 +142,7 @@ public class Conge extends AbstractEntity<Conge> {
             return false;
         return true;
     }
+
 
     @Override
     public String toString() {

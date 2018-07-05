@@ -9,5 +9,7 @@ public interface SalarieRepository extends CrudRepository<Salarie, String> {
     Optional<Salarie> findByMatricule(String matricule);
 
     Salarie deleteByMatricule(String matricule);
+
+
 }
 

@@ -74,8 +74,4 @@ public abstract class AbstractControllerTest {
         congeRepository.deleteAll();
         motifRepository.deleteAll();
     }
-
-
-
-
 }

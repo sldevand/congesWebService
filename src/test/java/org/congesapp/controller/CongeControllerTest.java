@@ -155,6 +155,7 @@ public class CongeControllerTest extends AbstractControllerTest{
         Assert.isTrue(response.getStatusCodeValue() == 200, "OK");
 
         Conge maResponse = response.getBody();
+        Assert.isTrue(Optional.of(conge).isPresent(), "Fetched conge is null");
         testId = maResponse.getId();
         Assert.isTrue(maResponse.getMotif().equals(m1), "Persisted conge != conge");
         Assert.isTrue(maResponse.getSalarie().equals(s1), "Persisted conge != conge");
@@ -166,7 +167,9 @@ public class CongeControllerTest extends AbstractControllerTest{
 
         ResponseEntity<Conge> myResponse = restTemplate.getForEntity(END_URL + testId, Conge.class, headers);
         Conge conge = myResponse.getBody();
-        Assert.isTrue(null != conge, "Fetched conge is null");
+
+
+        Assert.isTrue(Optional.of(conge).isPresent(), "Fetched conge is null");
         Assert.isTrue(conge.getMotif().equals(m1), "Persisted conge != conge");
         Assert.isTrue(conge.getSalarie().equals(s1), "Persisted conge != conge");
     }
@@ -176,6 +179,6 @@ public class CongeControllerTest extends AbstractControllerTest{
         restTemplate.delete(END_URL + testId, headers);
         ResponseEntity<Conge> myResponse = restTemplate.getForEntity(END_URL + testId, Conge.class, headers);
         Conge conge = myResponse.getBody();
-        Assert.isTrue(null == conge, "Fetched conge is not null");
+        Assert.isTrue(Optional.of(conge).isPresent(), "Fetched conge is null");
     }
 }
