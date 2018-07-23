@@ -6,7 +6,7 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;
 
-public interface MotifRepository extends CrudRepository<Motif, String> {
+public interface MotifRepository extends CrudRepository<Motif, Long> {
 
-    Optional<Motif> findByNom(String nom);
+    Optional<Motif> findByName(String name);
 }

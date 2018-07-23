@@ -2,7 +2,6 @@ package org.congesapp.controller;
 
 import org.congesapp.model.Motif;
 import org.congesapp.repository.MotifRepository;
-import org.congesapp.repository.MotifRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,6 +10,7 @@ import java.util.Optional;
 
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
+@CrossOrigin
 @RestController
 @RequestMapping(path="/reasons")
 public class MotifController {
@@ -26,10 +26,17 @@ public class MotifController {
         return motif;
     }
 
-    @GetMapping(value = "/{nom}",
+    @GetMapping(value = "/{id}",
             produces = APPLICATION_JSON_VALUE)
-    public Motif read(@PathVariable String nom) {
-        Optional<Motif> sOpt = motifRepository.findByNom(nom);
+    public Motif readById(@PathVariable Long id) {
+        Optional<Motif> sOpt = motifRepository.findById(id);
+        return sOpt.orElse(null);
+    }
+
+    @GetMapping(value = "/name/{name}",
+            produces = APPLICATION_JSON_VALUE)
+    public Motif read(@PathVariable String name) {
+        Optional<Motif> sOpt = motifRepository.findByName(name);
         return sOpt.orElse(null);
     }
 
@@ -46,10 +53,18 @@ public class MotifController {
         return motifRepository.save(motif);
     }
 
-    @DeleteMapping(value = "/{nom}")
-    public void delete(@PathVariable String nom) {
+    @DeleteMapping(value = "/{id}")
+    public void deleteById(@PathVariable Long id) {
 
-        Optional<Motif> motif = motifRepository.findByNom(nom);
+        Optional<Motif> motif = motifRepository.findById(id);
+        motif.ifPresent(m -> motifRepository.delete(m));
+    }
+
+
+    @DeleteMapping(value = "/name/{name}")
+    public void delete(@PathVariable String name) {
+
+        Optional<Motif> motif = motifRepository.findByName(name);
         motif.ifPresent(m -> motifRepository.delete(m));
     }
 

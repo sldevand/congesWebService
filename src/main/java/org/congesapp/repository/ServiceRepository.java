@@ -6,6 +6,6 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;
 
-public interface ServiceRepository extends CrudRepository<Service, String> {
-    Optional<Service> findByNom(String nom);
+public interface ServiceRepository extends CrudRepository<Service, Long> {
+    Optional<Service> findByName(String name);
 }

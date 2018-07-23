@@ -5,7 +5,7 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;
 
-public interface PosteRepository extends CrudRepository<Poste, String> {
+public interface PosteRepository extends CrudRepository<Poste, Long> {
 
-    Optional<Poste> findByIntitule(String Intitule);
+    Optional<Poste> findByName(String name);
 }

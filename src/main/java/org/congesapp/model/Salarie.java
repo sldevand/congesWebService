@@ -1,13 +1,9 @@
 package org.congesapp.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import org.congesapp.exception.DataModelException;
-import org.congesapp.tools.Tools;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.text.ParseException;
 import java.util.*;
 
 
@@ -268,56 +264,7 @@ public class Salarie extends AbstractEntity<Salarie> {
                 '}';
     }
 
-    @Override
-    public void hydrateFromUrlParams(Map<String, String[]> pMap) throws DataModelException {
-
-        this.nom = getDef(pMap, "nom", "John");
-        this.prenom = getDef(pMap, "prenom", "Doe");
-
-        try {
-            this.naissance = Tools.strToDate(getDef(pMap, "naissance", "1/1/1970"));
-        } catch (ParseException e) {
-            throw new DataModelException("Impossible de parser la date de naissance : " + this.naissance);
-        }
-
-        try {
-            this.entree = Tools.strToDate(getDef(pMap, "entree", "1/1/1970"));
-        } catch (ParseException e) {
-            throw new DataModelException("Impossible de parser la date d'entree : " + this.entree);
-        }
-
-        try {
-            this.resteConges = Double.parseDouble(getDef(pMap, "resteConges", "0"));
-        } catch (NumberFormatException e) {
-            throw new DataModelException("Impossible de parser le nombre de congés : " + this.resteConges);
-        }
-
-        this.adresse = new Adresse();
-        this.adresse.hydrateFromUrlParams(pMap);
-
-        this.tel = getDef(pMap, "tel", "99999");
-        this.email = getDef(pMap, "email", "john@doe.com");
-
-        this.login = getDef(pMap, "login", "user");
-        this.pwd = getDef(pMap, "pwd", "user");
-
-        try {
-            this.droit = DroitEnum.valueOf(getDef(pMap, "droit", "0"));
-        } catch (IllegalArgumentException e) {
-            throw new DataModelException("Impossible de parser le droit : " + this.droit);
-        }
-
-        String matriculeStr = getDef(pMap, "matricule", "");
-
-        if (matriculeStr != null && !matriculeStr.isEmpty() && !matriculeStr.equals("0")) {
-            matricule = matriculeStr;
-        } else {
-            generateMatricule();
-        }
-
-    }
-
-    /**
+       /**
      * Matricule generation with initials+birth day+birth month+a pseudo random
      * number between 1 and 999
      */

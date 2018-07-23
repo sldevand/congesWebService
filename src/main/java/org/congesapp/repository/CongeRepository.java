@@ -10,8 +10,8 @@ import java.util.Optional;
 
 public interface CongeRepository extends CrudRepository<Conge, Long> {
 
-    @Query("SELECT c FROM Conge c WHERE c.motif.nom = :nom")
-    Optional<Conge> findByMotif(@Param("nom") String nom);
+    @Query("SELECT c FROM Conge c WHERE c.motif.name = :name")
+    Optional<Conge> findByMotif(@Param("name") String name);
 
 
 }

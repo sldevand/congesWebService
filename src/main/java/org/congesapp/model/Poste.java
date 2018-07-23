@@ -1,10 +1,7 @@
 package org.congesapp.model;
 
-import org.congesapp.exception.DataModelException;
-
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.Map;
 
 @Entity
 @Table
@@ -18,15 +15,15 @@ public class Poste extends AbstractEntity<Poste> {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String intitule;
+    private String name;
 
     public Poste() {
         super(Poste.class);
     }
 
-    public Poste(String intitule) {
+    public Poste(String name) {
         super(Poste.class);
-        this.intitule = intitule;
+        this.name = name;
     }
 
     public Long getId() {
@@ -37,19 +34,19 @@ public class Poste extends AbstractEntity<Poste> {
         this.id = id;
     }
 
-    public String getIntitule() {
-        return intitule;
+    public String getName() {
+        return name;
     }
 
-    public void setIntitule(String intitule) {
-        this.intitule = intitule;
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((intitule == null) ? 0 : intitule.hashCode());
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
         return result;
     }
 
@@ -62,22 +59,17 @@ public class Poste extends AbstractEntity<Poste> {
         if (getClass() != obj.getClass())
             return false;
         Poste other = (Poste) obj;
-        if (intitule == null) {
-            if (other.intitule != null)
+        if (name == null) {
+            if (other.name != null)
                 return false;
-        } else if (!intitule.equals(other.intitule))
+        } else if (!name.equals(other.name))
             return false;
         return true;
     }
 
     @Override
     public String toString() {
-        return intitule;
+        return name;
     }
 
-    @Override
-    public void hydrateFromUrlParams(Map<String, String[]> pMap) throws DataModelException {
-        this.intitule = getDef(pMap, "intitule", " ");
-
-    }
 }

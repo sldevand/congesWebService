@@ -1,16 +1,10 @@
 package org.congesapp.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import org.congesapp.exception.DataModelException;
-import org.congesapp.tools.Tools;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.text.ParseException;
 import java.util.Date;
-import java.util.Map;
 
 @Entity
 @Table
@@ -89,22 +83,7 @@ public class Conge extends AbstractEntity<Conge> {
         this.salarie = salarie;
     }
 
-    @Override
-    public void hydrateFromUrlParams(Map<String, String[]> pMap) throws DataModelException {
 
-        try {
-            this.debut = Tools.strToDate(getDef(pMap, "debut", "01/01/1970"));
-        } catch (ParseException e1) {
-            throw new DataModelException("Impossible de parser la date de debut : " + this.debut);
-
-        }
-
-        try {
-            this.fin = Tools.strToDate(getDef(pMap, "fin", "01/01/1970"));
-        } catch (ParseException e) {
-            throw new DataModelException("Impossible de parser la date de fin : " + this.fin);
-        }
-    }
 
     @Override
     public int hashCode() {

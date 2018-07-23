@@ -10,6 +10,7 @@ import java.util.Optional;
 
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
+@CrossOrigin
 @RestController
 @RequestMapping(path="/holidays")
 public class CongeController {

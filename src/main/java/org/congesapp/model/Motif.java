@@ -1,10 +1,7 @@
 package org.congesapp.model;
 
-import org.congesapp.exception.DataModelException;
-
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.Map;
 
 @Entity
 @Table
@@ -18,15 +15,15 @@ public class Motif extends AbstractEntity<Motif> {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String nom;
+    private String name;
 
     public Motif() {
         super(Motif.class);
     }
 
-    public Motif(String nom) {
+    public Motif(String name) {
         super(Motif.class);
-        this.nom = nom;
+        this.name = name;
     }
 
     public Long getId() {
@@ -37,19 +34,19 @@ public class Motif extends AbstractEntity<Motif> {
         this.id = id;
     }
 
-    public String getNom() {
-        return nom;
+    public String getName() {
+        return name;
     }
 
-    public void setNom(String nom) {
-        this.nom = nom;
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((nom == null) ? 0 : nom.hashCode());
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
         return result;
     }
 
@@ -62,10 +59,10 @@ public class Motif extends AbstractEntity<Motif> {
         if (getClass() != obj.getClass())
             return false;
         Motif other = (Motif) obj;
-        if (nom == null) {
-            if (other.nom != null)
+        if (name == null) {
+            if (other.name != null)
                 return false;
-        } else if (!nom.equals(other.nom))
+        } else if (!name.equals(other.name))
             return false;
         return true;
     }
@@ -73,13 +70,7 @@ public class Motif extends AbstractEntity<Motif> {
 
     @Override
     public String toString() {
-        return nom;
-    }
-
-
-    @Override
-    public void hydrateFromUrlParams(Map<String, String[]> pMap) throws DataModelException {
-        this.nom = getDef(pMap, "nom", " ");
+        return name;
     }
 
 }

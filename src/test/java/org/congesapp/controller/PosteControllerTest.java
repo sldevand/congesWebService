@@ -25,7 +25,8 @@ import static org.springframework.http.HttpMethod.PUT;
 public class PosteControllerTest extends AbstractControllerTest {
 
     private final static String END_URL = BASE_URL+"jobs/";
-    private static String testIntitule;
+    private static String testName;
+    private static Long testId;
 
     private static Poste p0;
     private static Poste p1;
@@ -42,7 +43,8 @@ public class PosteControllerTest extends AbstractControllerTest {
     @Test
     public void TestAPostPoste() {
         Poste maResponse = postPoste(p0);
-        testIntitule = maResponse.getIntitule();
+        testName = maResponse.getName();
+        testId= maResponse.getId();
         Assert.isTrue(p0.equals(maResponse), "Posted Poste not equals to the persisted one");
     }
 
@@ -65,9 +67,18 @@ public class PosteControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    public void TestCGetPosteByIntitule() {
+    public void TestCGetPosteById() {
 
-        ResponseEntity<Poste> myResponse = restTemplate.getForEntity(END_URL + testIntitule, Poste.class, headers);
+        ResponseEntity<Poste> myResponse = restTemplate.getForEntity(END_URL+ testId, Poste.class, headers);
+        Poste poste = myResponse.getBody();
+        Assert.isTrue(null != poste, "Fetched poste is null");
+        Assert.isTrue(poste.equals(p0), poste.toString() + " != " + p0.toString());
+    }
+
+    @Test
+    public void TestCGetPosteByName() {
+
+        ResponseEntity<Poste> myResponse = restTemplate.getForEntity(END_URL +"name/"+ testName, Poste.class, headers);
         Poste poste = myResponse.getBody();
         Assert.isTrue(null != poste, "Fetched poste is null");
         Assert.isTrue(poste.equals(p0), poste.toString() + " != " + p0.toString());
@@ -82,12 +93,12 @@ public class PosteControllerTest extends AbstractControllerTest {
     @Test
     public void TestEPutPoste() {
 
-        Optional<Poste> sOpt = posteRepository.findByIntitule(testIntitule);
-        Assert.isTrue(sOpt.isPresent(), "Poste " + testIntitule + " not found");
+        Optional<Poste> sOpt = posteRepository.findByName(testName);
+        Assert.isTrue(sOpt.isPresent(), "Poste " + testName + " not found");
 
         Poste poste = sOpt.get();
-        String newIntitule = "Chaudronnier";
-        poste.setIntitule(newIntitule);
+        String newName = "Chaudronnier";
+        poste.setName(newName);
 
 
         HttpEntity<Poste> requestBody = new HttpEntity<>(poste, headers);
@@ -97,9 +108,10 @@ public class PosteControllerTest extends AbstractControllerTest {
         Assert.isTrue(response.getStatusCodeValue() == 200, "OK");
         Poste maResponse = response.getBody();
 
-        testIntitule = maResponse.getIntitule();
+        testName = maResponse.getName();
+        testId= maResponse.getId();
 
-        Assert.isTrue(maResponse.getIntitule().equals(newIntitule), "Persisted intitule != newIntitule");
+        Assert.isTrue(maResponse.getName().equals(newName), "Persisted name != newName");
 
         p0 = maResponse;
     }
@@ -108,22 +120,19 @@ public class PosteControllerTest extends AbstractControllerTest {
     @Test
     public void TestFGetIfPosteHasBeenUpdated() {
 
-        ResponseEntity<Poste> myResponse = restTemplate.getForEntity(END_URL + testIntitule, Poste.class, headers);
+        ResponseEntity<Poste> myResponse = restTemplate.getForEntity(END_URL +"name/"+ testName, Poste.class, headers);
         Poste poste = myResponse.getBody();
         Assert.isTrue(null != poste, "Fetched poste is null");
         Assert.isTrue(poste.equals(p0), poste.toString() + " != " + p0.toString());
     }
 
     @Test
-    public void TestGDeletePosteByIntitule() {
+    public void TestGDeletePosteByName() {
 
-        restTemplate.delete(END_URL + testIntitule, headers);
-
-        ResponseEntity<Poste> myResponse = restTemplate.getForEntity(END_URL + testIntitule, Poste.class, headers);
+        restTemplate.delete(END_URL +"name/"+ testName, headers);
+        ResponseEntity<Poste> myResponse = restTemplate.getForEntity(END_URL +"name/"+ testName, Poste.class, headers);
         Poste poste = myResponse.getBody();
         Assert.isTrue(null == poste, "Fetched poste is not null");
-
-
     }
 
 

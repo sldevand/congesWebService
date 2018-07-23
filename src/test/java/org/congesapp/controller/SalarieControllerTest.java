@@ -25,9 +25,9 @@ import static org.springframework.http.HttpMethod.PUT;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class SalarieControllerTest extends AbstractControllerTest {
 
-    private final static String END_URL = BASE_URL+"employees/";
+    private final static String END_URL = BASE_URL + "employees/";
     private static String testMatricule;
-
+    private static Long testId;
     private static Salarie s0;
     private static Salarie s1;
     private static Salarie s2;
@@ -38,7 +38,7 @@ public class SalarieControllerTest extends AbstractControllerTest {
         addSalaries();
     }
 
-    private void addSalaries(){
+    private void addSalaries() {
 
         Poste poste = new Poste("dev");
         Service service = new Service("R&D");
@@ -46,7 +46,7 @@ public class SalarieControllerTest extends AbstractControllerTest {
         serviceRepository.save(service);
 
         Adresse adr0 = new Adresse("Gallion E", "rue des Marins", 66666L, "Tortuga", "Bahamas");
-        s0 = new Salarie("Sparrow", "Jack", Tools.randomDate(), adr0, poste , service, DroitEnum.USER);
+        s0 = new Salarie("Sparrow", "Jack", Tools.randomDate(), adr0, poste, service, DroitEnum.USER);
 
         Adresse adr1 = new Adresse("Batiment 1", "rue des Peupliers", 69730L, "Genay", "France");
         s1 = new Salarie("Lorrain", "Sébastien", Tools.randomDate(), adr1, poste, service, DroitEnum.ADMIN);
@@ -59,6 +59,7 @@ public class SalarieControllerTest extends AbstractControllerTest {
     public void TestAPostSalarie() {
         Salarie maResponse = postSalarie(s0);
         testMatricule = maResponse.getMatricule();
+        testId = maResponse.getId();
         Assert.isTrue(s0.equals(maResponse), "Posted Salarie not equals to the persisted one");
     }
 
@@ -80,9 +81,18 @@ public class SalarieControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    public void TestBGetSalarieById() {
+
+        ResponseEntity<Salarie> myResponse = restTemplate.getForEntity(END_URL + testId, Salarie.class, headers);
+        Salarie salarie = myResponse.getBody();
+        Assert.isTrue(null != salarie, "Fetched salarie is null");
+        Assert.isTrue(salarie.equals(s0), salarie.toString() + " != " + s0.toString());
+    }
+
+    @Test
     public void TestBGetSalarieByMatricule() {
 
-        ResponseEntity<Salarie> myResponse = restTemplate.getForEntity(END_URL + testMatricule, Salarie.class, headers);
+        ResponseEntity<Salarie> myResponse = restTemplate.getForEntity(END_URL + "matricule/" + testMatricule, Salarie.class, headers);
         Salarie salarie = myResponse.getBody();
         Assert.isTrue(null != salarie, "Fetched salarie is null");
         Assert.isTrue(salarie.equals(s0), salarie.toString() + " != " + s0.toString());
@@ -116,6 +126,7 @@ public class SalarieControllerTest extends AbstractControllerTest {
         Salarie maResponse = response.getBody();
 
         testMatricule = maResponse.getMatricule();
+        testId = maResponse.getId();
 
         Assert.isTrue(maResponse.getNom().equals(newNom), "Persisted nom != newNom");
         Assert.isTrue(maResponse.getPrenom().equals(newPrenom), "Persisted prenom != newPrenom");
@@ -126,7 +137,7 @@ public class SalarieControllerTest extends AbstractControllerTest {
     @Test
     public void TestEGetIfSalarieHasBeenUpdated() {
 
-        ResponseEntity<Salarie> myResponse = restTemplate.getForEntity(END_URL + testMatricule, Salarie.class, headers);
+        ResponseEntity<Salarie> myResponse = restTemplate.getForEntity(END_URL + "matricule/" + testMatricule, Salarie.class, headers);
         Salarie salarie = myResponse.getBody();
         Assert.isTrue(null != salarie, "Fetched salarie is null");
         Assert.isTrue(salarie.equals(s0), salarie.toString() + " != " + s0.toString());
@@ -135,9 +146,9 @@ public class SalarieControllerTest extends AbstractControllerTest {
     @Test
     public void TestFDeleteSalarieByMatricule() {
 
-        restTemplate.delete(END_URL + testMatricule, headers);
+        restTemplate.delete(END_URL + "matricule/" + testMatricule, headers);
 
-        ResponseEntity<Salarie> myResponse = restTemplate.getForEntity(END_URL + testMatricule, Salarie.class, headers);
+        ResponseEntity<Salarie> myResponse = restTemplate.getForEntity(END_URL + "matricule/" + testMatricule, Salarie.class, headers);
         Salarie salarie = myResponse.getBody();
         Assert.isTrue(null == salarie, "Fetched salarie is not null");
 

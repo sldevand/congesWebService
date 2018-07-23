@@ -4,7 +4,6 @@ import org.congesapp.exception.DataModelException;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.Map;
 
 @Entity
 @Table
@@ -165,31 +164,5 @@ public class Adresse extends AbstractEntity<Adresse> {
 
     }
 
-    @Override
-    public void hydrateFromUrlParams(Map<String, String[]> pMap) throws DataModelException {
-        String idStr = getDef(pMap, "adresseId", "0");
-        try {
-
-            if (idStr != null && idStr != "0" && !idStr.isEmpty()) {
-                this.id = Long.parseLong(getDef(pMap, "adresseId", "0"));
-            }
-        } catch (NumberFormatException e) {
-            throw new DataModelException("Adresse : Impossible de parser l'Id : " + id + " à partir de " + idStr);
-        }
-
-        this.complement = getDef(pMap, "complement", " ");
-        this.libelle = getDef(pMap, "libelle", " ");
-
-        try {
-            this.codePostal = Long.parseLong(getDef(pMap, "codePostal", "99999"));
-        } catch (IllegalArgumentException e) {
-            throw new DataModelException(
-                    "Impossible de parser le code Postal : " + getDef(pMap, "codePostal", "99999"));
-        }
-
-        this.ville = getDef(pMap, "ville", " ");
-        this.pays = getDef(pMap, "pays", " ");
-
-    }
 
 }

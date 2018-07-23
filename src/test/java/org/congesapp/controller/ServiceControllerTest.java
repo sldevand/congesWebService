@@ -25,7 +25,8 @@ import static org.springframework.http.HttpMethod.PUT;
 public class ServiceControllerTest extends AbstractControllerTest {
 
     private final static String END_URL = BASE_URL+"services/";
-    private static String testNom;
+    private static String testName;
+    private static Long testId;
     private static Service s0;
     private static Service s1;
     private static Service s2;
@@ -40,7 +41,8 @@ public class ServiceControllerTest extends AbstractControllerTest {
     @Test
     public void testAPostService() {
         Service maResponse = postService(s0);
-        testNom = maResponse.getNom();
+        testName = maResponse.getName();
+        testId=maResponse.getId();
         Assert.isTrue(s0.equals(maResponse), "Serviced Service not equals to the persisted one");
     }
 
@@ -63,9 +65,18 @@ public class ServiceControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    public void testCGetServiceByNom() {
+    public void testCGetServiceById() {
 
-        ResponseEntity<Service> myResponse = restTemplate.getForEntity(END_URL + testNom, Service.class, headers);
+        ResponseEntity<Service> myResponse = restTemplate.getForEntity(END_URL + testId, Service.class, headers);
+        Service service = myResponse.getBody();
+        Assert.isTrue(null != service, "Fetched service is null");
+        Assert.isTrue(service.equals(s0), service.toString() + " != " + s0.toString());
+    }
+
+    @Test
+    public void testCGetServiceByName() {
+
+        ResponseEntity<Service> myResponse = restTemplate.getForEntity(END_URL +"name/"+ testName, Service.class, headers);
         Service service = myResponse.getBody();
         Assert.isTrue(null != service, "Fetched service is null");
         Assert.isTrue(service.equals(s0), service.toString() + " != " + s0.toString());
@@ -80,12 +91,12 @@ public class ServiceControllerTest extends AbstractControllerTest {
     @Test
     public void testEPutService() {
 
-        Optional<Service> sOpt = serviceRepository.findByNom(testNom);
-        Assert.isTrue(sOpt.isPresent(), "Service " + testNom + " not found");
+        Optional<Service> sOpt = serviceRepository.findByName(testName);
+        Assert.isTrue(sOpt.isPresent(), "Service " + testName + " not found");
 
         Service service = sOpt.get();
-        String newNom = "Chaudronnier";
-        service.setNom(newNom);
+        String newName = "Chaudronnier";
+        service.setName(newName);
 
 
         HttpEntity<Service> requestBody = new HttpEntity<>(service, headers);
@@ -95,9 +106,9 @@ public class ServiceControllerTest extends AbstractControllerTest {
         Assert.isTrue(response.getStatusCodeValue() == 200, "OK");
         Service maResponse = response.getBody();
 
-        testNom = maResponse.getNom();
-
-        Assert.isTrue(maResponse.getNom().equals(newNom), "Persisted intitule != newNom");
+        testName = maResponse.getName();
+        testId=maResponse.getId();
+        Assert.isTrue(maResponse.getName().equals(newName), "Persisted intitule != newName");
 
         s0 = maResponse;
     }
@@ -106,18 +117,18 @@ public class ServiceControllerTest extends AbstractControllerTest {
     @Test
     public void testFGetIfServiceHasBeenUpdated() {
 
-        ResponseEntity<Service> myResponse = restTemplate.getForEntity(END_URL + testNom, Service.class, headers);
+        ResponseEntity<Service> myResponse = restTemplate.getForEntity(END_URL +"name/"+ testName, Service.class, headers);
         Service service = myResponse.getBody();
         Assert.isTrue(null != service, "Fetched service is null");
         Assert.isTrue(service.equals(s0), service.toString() + " != " + s0.toString());
     }
 
     @Test
-    public void testGDeleteServiceByNom() {
+    public void testGDeleteServiceByName() {
 
-        restTemplate.delete(END_URL + testNom, headers);
+        restTemplate.delete(END_URL +"name/"+ testName, headers);
 
-        ResponseEntity<Service> myResponse = restTemplate.getForEntity(END_URL + testNom, Service.class, headers);
+        ResponseEntity<Service> myResponse = restTemplate.getForEntity(END_URL +"name/"+ testName, Service.class, headers);
         Service service = myResponse.getBody();
         Assert.isTrue(null == service, "Fetched service is not null");
 

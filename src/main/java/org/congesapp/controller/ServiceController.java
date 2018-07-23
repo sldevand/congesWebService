@@ -10,6 +10,7 @@ import java.util.Optional;
 
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
+@CrossOrigin
 @RestController
 @RequestMapping(path="/services")
 public class ServiceController {
@@ -25,10 +26,18 @@ public class ServiceController {
         return service;
     }
 
-    @GetMapping(value = "/{nom}",
+    @GetMapping(value = "/{id}",
             produces = APPLICATION_JSON_VALUE)
-    public Service read(@PathVariable String nom) {
-        Optional<Service> sOpt = serviceRepository.findByNom(nom);
+    public Service read(@PathVariable Long id) {
+        Optional<Service> sOpt = serviceRepository.findById(id);
+        return sOpt.orElse(null);
+    }
+
+
+    @GetMapping(value = "/name/{name}",
+            produces = APPLICATION_JSON_VALUE)
+    public Service read(@PathVariable String name) {
+        Optional<Service> sOpt = serviceRepository.findByName(name);
         return sOpt.orElse(null);
     }
 
@@ -45,10 +54,18 @@ public class ServiceController {
         return serviceRepository.save(service);
     }
 
-    @DeleteMapping(value = "/{nom}")
-    public void delete(@PathVariable String nom) {
 
-        Optional<Service> service = serviceRepository.findByNom(nom);
+    @DeleteMapping(value = "/{id}")
+    public void delete(@PathVariable Long id) {
+
+        Optional<Service> service = serviceRepository.findById(id);
+        service.ifPresent(s -> serviceRepository.delete(s));
+    }
+
+    @DeleteMapping(value = "/name/{name}")
+    public void delete(@PathVariable String name) {
+
+        Optional<Service> service = serviceRepository.findByName(name);
         service.ifPresent(s -> serviceRepository.delete(s));
     }
 }

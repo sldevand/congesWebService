@@ -97,7 +97,7 @@ public class CongeControllerTest extends AbstractControllerTest{
     public void testAPostConge() {
         Conge maResponse = postConge(c0);
         testId = maResponse.getId();
-        testNom = maResponse.getMotif().getNom();
+        testNom = maResponse.getMotif().getName();
         Assert.isTrue(c0.equals(maResponse), "Conge not equals to the persisted one");
     }
 

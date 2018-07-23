@@ -22,14 +22,15 @@ import static org.springframework.http.HttpMethod.PUT;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = CongesApp.class)
 @ActiveProfiles({"TEST"})
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class MotifControllerTest extends AbstractControllerTest{
+public class MotifControllerTest extends AbstractControllerTest {
 
-    private final static String END_URL = BASE_URL+"reasons/";
-    private static String testNom;
+    private final static String END_URL = BASE_URL + "reasons/";
+    private static String testName;
+    private static Long testId;
     private static Motif m0;
     private static Motif m1;
     private static Motif m2;
-  
+
     @Override
     protected void initialize() {
         m0 = new Motif("Maladie");
@@ -40,7 +41,8 @@ public class MotifControllerTest extends AbstractControllerTest{
     @Test
     public void TestAPostMotif() {
         Motif maResponse = postMotif(m0);
-        testNom = maResponse.getNom();
+        testName = maResponse.getName();
+        testId = maResponse.getId();
         Assert.isTrue(m0.equals(maResponse), "Motif not equals to the persisted one");
     }
 
@@ -61,9 +63,18 @@ public class MotifControllerTest extends AbstractControllerTest{
     }
 
     @Test
-    public void TestCGetMotifByNom() {
+    public void TestCGetMotifById() {
 
-        ResponseEntity<Motif> myResponse = restTemplate.getForEntity(END_URL + testNom, Motif.class, headers);
+        ResponseEntity<Motif> myResponse = restTemplate.getForEntity(END_URL + "name/" + testName, Motif.class, headers);
+        Motif motif = myResponse.getBody();
+        Assert.isTrue(null != motif, "Fetched motif is null");
+        Assert.isTrue(motif.equals(m0), motif.toString() + " != " + m0.toString());
+    }
+
+    @Test
+    public void TestCGetMotifByName() {
+
+        ResponseEntity<Motif> myResponse = restTemplate.getForEntity(END_URL + "name/" + testName, Motif.class, headers);
         Motif motif = myResponse.getBody();
         Assert.isTrue(null != motif, "Fetched motif is null");
         Assert.isTrue(motif.equals(m0), motif.toString() + " != " + m0.toString());
@@ -78,12 +89,12 @@ public class MotifControllerTest extends AbstractControllerTest{
     @Test
     public void TestEPutMotif() {
 
-        Optional<Motif> sOpt = motifRepository.findByNom(testNom);
-        Assert.isTrue(sOpt.isPresent(), "Motif " + testNom + " not found");
+        Optional<Motif> sOpt = motifRepository.findByName(testName);
+        Assert.isTrue(sOpt.isPresent(), "Motif " + testName + " not found");
 
         Motif motif = sOpt.get();
         String newIntitule = "Chaudronnier";
-        motif.setNom(newIntitule);
+        motif.setName(newIntitule);
 
 
         HttpEntity<Motif> requestBody = new HttpEntity<>(motif, headers);
@@ -93,9 +104,9 @@ public class MotifControllerTest extends AbstractControllerTest{
         Assert.isTrue(response.getStatusCodeValue() == 200, "OK");
         Motif maResponse = response.getBody();
 
-        testNom = maResponse.getNom();
-
-        Assert.isTrue(maResponse.getNom().equals(newIntitule), "Persisted intitule != newIntitule");
+        testName = maResponse.getName();
+        testId = maResponse.getId();
+        Assert.isTrue(maResponse.getName().equals(newIntitule), "Persisted intitule != newIntitule");
 
         m0 = maResponse;
     }
@@ -104,18 +115,18 @@ public class MotifControllerTest extends AbstractControllerTest{
     @Test
     public void TestFGetIfMotifHasBeenUpdated() {
 
-        ResponseEntity<Motif> myResponse = restTemplate.getForEntity(END_URL + testNom, Motif.class, headers);
+        ResponseEntity<Motif> myResponse = restTemplate.getForEntity(END_URL + "name/" + testName, Motif.class, headers);
         Motif motif = myResponse.getBody();
         Assert.isTrue(null != motif, "Fetched motif is null");
         Assert.isTrue(motif.equals(m0), motif.toString() + " != " + m0.toString());
     }
 
     @Test
-    public void TestGDeleteMotifByNom() {
+    public void TestGDeleteMotifByName() {
 
-        restTemplate.delete(END_URL + testNom, headers);
+        restTemplate.delete(END_URL + "name/" + testName, headers);
 
-        ResponseEntity<Motif> myResponse = restTemplate.getForEntity(END_URL + testNom, Motif.class, headers);
+        ResponseEntity<Motif> myResponse = restTemplate.getForEntity(END_URL + "name/" + testName, Motif.class, headers);
         Motif motif = myResponse.getBody();
         Assert.isTrue(null == motif, "Fetched motif is not null");
 

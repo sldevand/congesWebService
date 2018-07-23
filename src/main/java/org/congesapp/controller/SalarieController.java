@@ -12,6 +12,7 @@ import java.util.Optional;
 
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
+@CrossOrigin
 @RestController
 @RequestMapping(path = "/employees")
 public class SalarieController {
@@ -33,7 +34,18 @@ public class SalarieController {
 
     }
 
-    @GetMapping(value = "/{matricule}",
+    @GetMapping(value = "/{id}",
+            produces = APPLICATION_JSON_VALUE)
+    public Salarie readById(@PathVariable Long id) {
+        Optional<Salarie> sOpt = salarieRepository.findById(id);
+        if (sOpt.isPresent()) {
+            return sOpt.get();
+        } else {
+            return null;
+        }
+    }
+
+    @GetMapping(value = "/matricule/{matricule}",
             produces = APPLICATION_JSON_VALUE)
     public Salarie read(@PathVariable String matricule) {
         Optional<Salarie> sOpt = salarieRepository.findByMatricule(matricule);
@@ -57,7 +69,14 @@ public class SalarieController {
         return salarieRepository.save(salarie);
     }
 
-    @DeleteMapping(value = "/{matricule}")
+    @DeleteMapping(value = "/{id}")
+    public void delete(@PathVariable Long id) {
+
+        Optional<Salarie> salarie = salarieRepository.findById(id);
+        salarie.ifPresent(s -> salarieRepository.delete(s));
+    }
+
+    @DeleteMapping(value = "/matricule/{matricule}")
     public void delete(@PathVariable String matricule) {
 
         Optional<Salarie> salarie = salarieRepository.findByMatricule(matricule);

@@ -1,12 +1,10 @@
 package org.congesapp.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import org.congesapp.exception.DataModelException;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 @Entity
@@ -21,7 +19,7 @@ public class Service extends AbstractEntity<Service> {
     private Long id;
 
     @Column(unique = true, nullable = false)
-    private String nom;
+    private String name;
 
     @JsonBackReference
     @OneToMany(mappedBy = "service", fetch = FetchType.EAGER)
@@ -31,9 +29,9 @@ public class Service extends AbstractEntity<Service> {
         super(Service.class);
     }
 
-    public Service(String nom) {
+    public Service(String name) {
         super(Service.class);
-        this.nom = nom;
+        this.name = name;
     }
 
     public Long getId() {
@@ -44,12 +42,12 @@ public class Service extends AbstractEntity<Service> {
         this.id = id;
     }
 
-    public String getNom() {
-        return nom;
+    public String getName() {
+        return name;
     }
 
-    public void setNom(String nom) {
-        this.nom = nom;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Set<Salarie> getSalarie() {
@@ -64,7 +62,7 @@ public class Service extends AbstractEntity<Service> {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((nom == null) ? 0 : nom.hashCode());
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
         return result;
     }
 
@@ -77,22 +75,17 @@ public class Service extends AbstractEntity<Service> {
         if (getClass() != obj.getClass())
             return false;
         Service other = (Service) obj;
-        if (nom == null) {
-            if (other.nom != null)
+        if (name == null) {
+            if (other.name != null)
                 return false;
-        } else if (!nom.equals(other.nom))
+        } else if (!name.equals(other.name))
             return false;
         return true;
     }
 
     @Override
     public String toString() {
-        return nom;
-    }
-
-    @Override
-    public void hydrateFromUrlParams(Map<String, String[]> pMap) throws DataModelException {
-        this.nom = getDef(pMap, "nom", " ");
+        return name;
     }
 
 }
